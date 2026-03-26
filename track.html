@@ -1,151 +1,24 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tracking Result</title>
-
-<style>
-body {
-  font-family: Arial;
-  margin: 0;
-  background: #f4f6f8;
-}
-
-.header {
-  background: #1f3b63;
-  color: white;
-  padding: 15px;
-  font-size: 18px;
-}
-
-.container {
-  padding: 20px;
-}
-
-.card {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-.statusBox {
-  margin-top: 20px;
-  background: #e8dccb;
-  padding: 20px;
-  border-left: 5px solid orange;
-  border-radius: 5px;
-}
-
-.steps {
-  display: flex;
-  justify-content: space-between;
-  margin: 20px 0;
-}
-
-.step {
-  text-align: center;
-  font-size: 14px;
-}
-
-.circle {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: #ccc;
-  margin: auto;
-  line-height: 30px;
-  color: white;
-}
-
-.active {
-  background: green;
-}
-</style>
-</head>
-
-<body>
-
-<div class="header">🌐 Global Express</div>
-
-<div class="container">
-<div class="card">
-
-<h2>Track Package</h2>
-
-<div class="statusBox">
-
-<h3 id="statusText"></h3>
-
-<div class="steps">
-  <div class="step">
-    <div id="ship" class="circle">✓</div>
-    <div>Shipped</div>
-  </div>
-  <div class="step">
-    <div id="transit" class="circle">✓</div>
-    <div>Transit</div>
-  </div>
-  <div class="step">
-    <div id="hold" class="circle">!</div>
-    <div>Hold</div>
-  </div>
-</div>
-
-<p><b>Tracking:</b> <span id="code"></span></p>
-<p><b>Location:</b> <span id="location"></span></p>
-<p><b>Date:</b> <span id="date"></span></p>
-
-</div>
-
-</div>
-</div>
-
 <script>
-
-// DATA
-let data = {
-"GXE777888": {
-status: "hold",
-location: "Abuja International Airport"
-}
-};
-
 let params = new URLSearchParams(window.location.search);
 let code = params.get("code");
+
+let data = JSON.parse(localStorage.getItem("tracking") || "{}");
 
 if(data[code]) {
 let d = data[code];
 
 document.getElementById("code").innerText = code;
+document.getElementById("status").innerText = d.status;
 document.getElementById("location").innerText = d.location;
 document.getElementById("date").innerText = new Date().toDateString();
 
-if(d.status === "hold") {
-document.getElementById("statusText").innerText = "On Hold";
-
 document.getElementById("ship").classList.add("active");
-document.getElementById("transit").style.background = "#ccc";
-document.getElementById("hold").style.background = "#ccc";
 
-} else if(d.status === "transit") {
-document.getElementById("statusText").innerText = "In Transit";
-
-document.getElementById("ship").classList.add("active");
-document.getElementById("transit").classList.add("active");
-
-} else {
-document.getElementById("statusText").innerText = "Delivered";
-
-document.getElementById("ship").classList.add("active");
-document.getElementById("transit").classList.add("active");
-document.getElementById("hold").classList.add("active");
+if(d.status === "On Hold") {
+document.getElementById("hold").classList.add("hold");
 }
 
 } else {
-document.body.innerHTML = "Invalid Tracking Number";
+document.body.innerHTML = "Tracking not found";
 }
-
 </script>
-
-</body>
-</html>
