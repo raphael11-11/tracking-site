@@ -2,180 +2,169 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Global Express Courier</title>
+<title>Global Express Tracking</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body {
-    font-family: Arial;
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
     margin: 0;
-    background: #eef2f7;
 }
 
 .header {
-    background: #1a2b49;
+    background: #111;
     color: white;
     padding: 15px;
     text-align: center;
-    font-size: 22px;
+    font-size: 20px;
 }
 
 .container {
-    max-width: 900px;
-    margin: 20px auto;
+    padding: 20px;
+}
+
+.card {
     background: white;
     padding: 20px;
     border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-input, select {
-    padding: 10px;
-    margin: 5px;
-    width: 60%;
+input, select, button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
 }
 
 button {
-    padding: 10px 15px;
-    background: #1a2b49;
+    background: black;
     color: white;
-    border: none;
     cursor: pointer;
 }
 
-.status-box {
-    display: none;
-    background: #fff4e5;
-    padding: 15px;
+.status {
     margin-top: 20px;
-    border-left: 5px solid orange;
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: bold;
 }
 
-.progress {
-    display: flex;
-    justify-content: space-between;
-    margin: 20px 0;
+.hold {
+    background: #fff3cd;
+    color: #856404;
 }
 
-.circle {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: #ccc;
-    text-align: center;
-    color: white;
-    line-height: 30px;
+.success {
+    background: #d4edda;
+    color: #155724;
 }
-
-.active { background: green; }
-.hold { background: orange; }
 
 .admin {
+    display: none;
     margin-top: 40px;
-    padding: 15px;
-    background: #f1f1f1;
 }
-
 </style>
 </head>
 
 <body>
 
-<div class="header">🌐 Global Express Courier</div>
+<div class="header">📦 Global Express Tracking</div>
 
 <div class="container">
 
-<h2>Track Package</h2>
-<input id="trackInput" placeholder="Enter Tracking Number">
+<div class="card">
+<h3>Track Your Package</h3>
+
+<input type="text" id="trackInput" placeholder="Enter Tracking Number">
 <button onclick="track()">Track</button>
 
-<div id="result" class="status-box">
-    <h3 id="statusText"></h3>
-
-    <div class="progress">
-        <div><div id="s1" class="circle">✓</div><p>Shipped</p></div>
-        <div><div id="s2" class="circle">✓</div><p>Transit</p></div>
-        <div><div id="s3" class="circle">!</div><p>Hold</p></div>
-        <div><div id="s4" class="circle">•</div><p>Delivery</p></div>
-        <div><div id="s5" class="circle">•</div><p>Done</p></div>
-    </div>
-
-    <div id="details"></div>
+<div id="result"></div>
 </div>
 
-<!-- ADMIN PANEL -->
-<div class="admin">
-    <h3>Admin Panel</h3>
+<!-- ADMIN PANEL (HIDDEN) -->
+<div class="card admin" id="adminPanel">
+<h3>Admin Panel</h3>
 
-    <input id="adminTrack" placeholder="Tracking Number"><br>
+<input type="text" id="adminCode" placeholder="Tracking Number">
+<select id="status">
+<option value="On Hold">On Hold</option>
+<option value="In Transit">In Transit</option>
+<option value="Delivered">Delivered</option>
+</select>
 
-    <select id="status">
-        <option value="1">Shipped</option>
-        <option value="2">In Transit</option>
-        <option value="3">On Hold</option>
-        <option value="4">Out for Delivery</option>
-        <option value="5">Delivered</option>
-    </select><br>
+<input type="text" id="location" placeholder="Location">
+<input type="text" id="fee" placeholder="Outstanding Fee ($)">
 
-    <input id="location" placeholder="Location"><br>
-
-    <button onclick="update()">Update Status</button>
+<button onclick="update()">Update</button>
 </div>
 
 </div>
 
 <script>
 
-let database = JSON.parse(localStorage.getItem("db")) || {
-    "GXE123456": {step:3, location:"Abuja Airport", status:"On Hold ✈️"},
+// DEFAULT DATA
+let data = {
+"GXE777888": {
+status: "On Hold",
+location: "Abuja International Airport",
+fee: "100"
+}
 };
 
-function save() {
-    localStorage.setItem("db", JSON.stringify(database));
-}
-
+// TRACK FUNCTION
 function track() {
-    let id = document.getElementById("trackInput").value;
-    let data = database[id];
+let code = document.getElementById("trackInput").value;
+let result = document.getElementById("result");
 
-    if (!data) {
-        alert("Tracking not found");
-        return;
-    }
+if(data[code]) {
+let d = data[code];
 
-    document.getElementById("result").style.display = "block";
-    document.getElementById("statusText").innerHTML = data.status;
-
-    document.getElementById("details").innerHTML = `
-    <p><b>Tracking:</b> ${id}</p>
-    <p><b>Location:</b> ${data.location}</p>
-    <p><b>Date:</b> ${new Date().toDateString()}</p>
-    `;
-
-    for (let i=1;i<=5;i++){
-        document.getElementById("s"+i).className="circle";
-    }
-
-    for (let i=1;i<=data.step;i++){
-        let el=document.getElementById("s"+i);
-        el.classList.add(i==3?"hold":"active");
-    }
+if(d.status === "On Hold") {
+result.innerHTML = `
+<div class="status hold">
+📦 Package on HOLD at ${d.location}<br><br>
+⚠ Outstanding Fee: $${d.fee}<br><br>
+Please complete payment for release.
+</div>`;
+} else {
+result.innerHTML = `
+<div class="status success">
+✅ Status: ${d.status}<br>
+📍 Location: ${d.location}
+</div>`;
 }
 
+} else {
+result.innerHTML = "❌ Invalid Tracking Number";
+}
+}
+
+// ADMIN UPDATE
 function update() {
-    let id = document.getElementById("adminTrack").value;
-    let step = document.getElementById("status").value;
-    let location = document.getElementById("location").value;
+let code = document.getElementById("adminCode").value;
+let status = document.getElementById("status").value;
+let location = document.getElementById("location").value;
+let fee = document.getElementById("fee").value;
 
-    let statusText = ["","Shipped","In Transit","On Hold ✈️","Out for Delivery 🚚","Delivered ✅"];
+data[code] = {status, location, fee};
 
-    database[id] = {
-        step: parseInt(step),
-        location: location,
-        status: statusText[step]
-    };
-
-    save();
-    alert("Updated successfully");
+alert("Updated!");
 }
+
+// SECRET ADMIN ACCESS
+let secret = "";
+document.addEventListener("keydown", function(e) {
+secret += e.key;
+
+if(secret.includes("admin123")) {
+document.getElementById("adminPanel").style.display = "block";
+alert("Admin Panel Opened");
+secret = "";
+}
+});
 
 </script>
 
