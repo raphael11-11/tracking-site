@@ -1,124 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Tracking</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Track Package</title>
 
 <style>
-body {
-    font-family: Arial;
-    margin: 0;
-    background: #f5f5f5;
-}
-
-.header {
-    background: black;
-    color: white;
-    padding: 15px;
-    text-align: center;
-}
-
-.container {
-    padding: 20px;
-}
-
+body { font-family: Arial; background:#f5f5f5; }
+.container { padding:20px; }
 .card {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
+  background:white;
+  padding:20px;
+  border-radius:10px;
 }
-
 input, button {
-    width: 100%;
-    padding: 12px;
-    margin-top: 10px;
+  width:100%;
+  padding:12px;
+  margin-top:10px;
 }
-
 button {
-    background: black;
-    color: white;
-    border: none;
-}
-
-.hold {
-    background: #fff3cd;
-    padding: 20px;
-    border-radius: 8px;
-    color: #856404;
-}
-
-.hidden {
-    display: none;
+  background:black;
+  color:white;
+  border:none;
 }
 </style>
 </head>
 
 <body>
 
-<div class="header">📦 Global Tracking</div>
-
 <div class="container">
+<div class="card">
+<h2>Track Your Package</h2>
 
-<!-- PAGE 1 -->
-<div id="searchPage" class="card">
-<h3>Track Package</h3>
+<input id="code" placeholder="Enter Tracking Number">
+<button onclick="go()">Track</button>
 
-<input id="trackInput" placeholder="Enter Tracking Number">
-<button onclick="goTrack()">Track</button>
 </div>
-
-<!-- PAGE 2 -->
-<div id="resultPage" class="card hidden">
-<h3>Shipment Details</h3>
-<div id="result"></div>
-
-<button onclick="goBack()">← Back</button>
-</div>
-
 </div>
 
 <script>
-
-// DATA
-let data = {
-"GXE777888": {
-status: "On Hold",
-location: "Abuja International Airport",
-fee: "100"
+function go(){
+let code = document.getElementById("code").value;
+window.location.href = "track.html?code=" + code;
 }
-};
-
-// GO TO RESULT PAGE
-function goTrack() {
-let code = document.getElementById("trackInput").value;
-
-if(data[code]) {
-let d = data[code];
-
-document.getElementById("searchPage").classList.add("hidden");
-document.getElementById("resultPage").classList.remove("hidden");
-
-document.getElementById("result").innerHTML = `
-<div class="hold">
-📦 Package ON HOLD<br><br>
-📍 Location: ${d.location}<br><br>
-⚠ Outstanding Fee: $${d.fee}<br><br>
-Please complete payment to release your package.
-</div>
-`;
-
-} else {
-alert("Invalid Tracking Number");
-}
-}
-
-// BACK BUTTON
-function goBack() {
-document.getElementById("searchPage").classList.remove("hidden");
-document.getElementById("resultPage").classList.add("hidden");
-}
-
 </script>
 
 </body>
