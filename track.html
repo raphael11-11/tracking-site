@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tracking Result</title>
+
+<style>
+body {
+  font-family: Arial;
+  background:#f5f5f5;
+  padding:20px;
+}
+
+.box {
+  background:#f3e3b0;
+  padding:25px;
+  border-radius:12px;
+  color:#7a5b00;
+  font-size:18px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="result"></div>
+
+<script>
+
+// DATA
+let data = {
+"GXE777888": {
+location: "Abuja International Airport",
+fee: "100"
+}
+};
+
+let params = new URLSearchParams(window.location.search);
+let code = params.get("code");
+
+if(data[code]) {
+let d = data[code];
+
+document.getElementById("result").innerHTML = `
+<div class="box">
+📦 Package on HOLD at ${d.location}<br><br>
+⚠ Outstanding Fee: $${d.fee}<br><br>
+Please complete payment for release.
+</div>
+`;
+
+} else {
+document.getElementById("result").innerHTML = "Invalid Tracking Number";
+}
+
+</script>
+
+</body>
+</html>
