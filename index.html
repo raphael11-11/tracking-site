@@ -2,175 +2,182 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Global Express Tracking</title>
+<title>Global Express Courier</title>
 
 <style>
 body {
-    font-family: 'Segoe UI', sans-serif;
-    background: #eef2f7;
+    font-family: Arial;
     margin: 0;
+    background: #eef2f7;
 }
 
 .header {
     background: #1a2b49;
-    color: #fff;
-    padding: 20px;
+    color: white;
+    padding: 15px;
     text-align: center;
-    font-size: 24px;
-    letter-spacing: 1px;
+    font-size: 22px;
 }
 
 .container {
-    width: 90%;
-    max-width: 1000px;
-    margin: 40px auto;
-    background: #fff;
+    max-width: 900px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
     border-radius: 10px;
-    padding: 30px;
-    box-shadow: 0 5px 25px rgba(0,0,0,0.1);
 }
 
-.tracking-number {
-    font-size: 18px;
-    margin-bottom: 20px;
+input, select {
+    padding: 10px;
+    margin: 5px;
+    width: 60%;
+}
+
+button {
+    padding: 10px 15px;
+    background: #1a2b49;
+    color: white;
+    border: none;
+    cursor: pointer;
 }
 
 .status-box {
-    padding: 20px;
-    border-radius: 8px;
+    display: none;
     background: #fff4e5;
-    border-left: 6px solid #f39c12;
-    margin-bottom: 30px;
-}
-
-.status-box h2 {
-    margin: 0;
-    color: #d35400;
+    padding: 15px;
+    margin-top: 20px;
+    border-left: 5px solid orange;
 }
 
 .progress {
     display: flex;
     justify-content: space-between;
-    margin: 40px 0;
-}
-
-.step {
-    text-align: center;
-    flex: 1;
-    position: relative;
-}
-
-.step::before {
-    content: '';
-    position: absolute;
-    top: 15px;
-    left: -50%;
-    width: 100%;
-    height: 4px;
-    background: #ccc;
-    z-index: -1;
-}
-
-.step:first-child::before {
-    display: none;
+    margin: 20px 0;
 }
 
 .circle {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    margin: auto;
     background: #ccc;
-    line-height: 30px;
-    color: #fff;
-}
-
-.active .circle {
-    background: #27ae60;
-}
-
-.hold .circle {
-    background: #e67e22;
-}
-
-.step p {
-    margin-top: 10px;
-    font-size: 14px;
-}
-
-.details {
-    margin-top: 20px;
-}
-
-.details p {
-    margin: 6px 0;
-}
-
-.footer-note {
-    margin-top: 30px;
-    font-size: 13px;
-    color: #888;
     text-align: center;
+    color: white;
+    line-height: 30px;
 }
+
+.active { background: green; }
+.hold { background: orange; }
+
+.admin {
+    margin-top: 40px;
+    padding: 15px;
+    background: #f1f1f1;
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="header">
-    🌐 Global Express Courier
-</div>
+<div class="header">🌐 Global Express Courier</div>
 
 <div class="container">
 
-    <div class="tracking-number">
-        <strong>Tracking Number:</strong> GXE-554839201-US
-    </div>
+<h2>Track Package</h2>
+<input id="trackInput" placeholder="Enter Tracking Number">
+<button onclick="track()">Track</button>
 
-    <div class="status-box">
-        <h2>📦 Shipment On Hold at Airport</h2>
-        <p>Your package is currently held at the international airport awaiting clearance.</p>
-    </div>
+<div id="result" class="status-box">
+    <h3 id="statusText"></h3>
 
     <div class="progress">
-        <div class="step active">
-            <div class="circle">✓</div>
-            <p>Shipped</p>
-        </div>
-
-        <div class="step active">
-            <div class="circle">✓</div>
-            <p>In Transit</p>
-        </div>
-
-        <div class="step hold">
-            <div class="circle">!</div>
-            <p>Airport Hold</p>
-        </div>
-
-        <div class="step">
-            <div class="circle">•</div>
-            <p>Out for Delivery</p>
-        </div>
-
-        <div class="step">
-            <div class="circle">•</div>
-            <p>Delivered</p>
-        </div>
+        <div><div id="s1" class="circle">✓</div><p>Shipped</p></div>
+        <div><div id="s2" class="circle">✓</div><p>Transit</p></div>
+        <div><div id="s3" class="circle">!</div><p>Hold</p></div>
+        <div><div id="s4" class="circle">•</div><p>Delivery</p></div>
+        <div><div id="s5" class="circle">•</div><p>Done</p></div>
     </div>
 
-    <div class="details">
-        <p><strong>Current Location:</strong> International Airport Hub</p>
-        <p><strong>Status:</strong> Awaiting Processing</p>
-        <p><strong>Last Updated:</strong> March 26, 2026 - 09:45 AM</p>
-        <p><strong>Carrier:</strong> Global Express Courier</p>
-    </div>
+    <div id="details"></div>
+</div>
 
-    <div class="footer-note">
-        ⚠ This is a demo tracking interface for design/testing purposes only.
-    </div>
+<!-- ADMIN PANEL -->
+<div class="admin">
+    <h3>Admin Panel</h3>
+
+    <input id="adminTrack" placeholder="Tracking Number"><br>
+
+    <select id="status">
+        <option value="1">Shipped</option>
+        <option value="2">In Transit</option>
+        <option value="3">On Hold</option>
+        <option value="4">Out for Delivery</option>
+        <option value="5">Delivered</option>
+    </select><br>
+
+    <input id="location" placeholder="Location"><br>
+
+    <button onclick="update()">Update Status</button>
+</div>
 
 </div>
+
+<script>
+
+let database = JSON.parse(localStorage.getItem("db")) || {
+    "GXE123456": {step:3, location:"Abuja Airport", status:"On Hold ✈️"},
+};
+
+function save() {
+    localStorage.setItem("db", JSON.stringify(database));
+}
+
+function track() {
+    let id = document.getElementById("trackInput").value;
+    let data = database[id];
+
+    if (!data) {
+        alert("Tracking not found");
+        return;
+    }
+
+    document.getElementById("result").style.display = "block";
+    document.getElementById("statusText").innerHTML = data.status;
+
+    document.getElementById("details").innerHTML = `
+    <p><b>Tracking:</b> ${id}</p>
+    <p><b>Location:</b> ${data.location}</p>
+    <p><b>Date:</b> ${new Date().toDateString()}</p>
+    `;
+
+    for (let i=1;i<=5;i++){
+        document.getElementById("s"+i).className="circle";
+    }
+
+    for (let i=1;i<=data.step;i++){
+        let el=document.getElementById("s"+i);
+        el.classList.add(i==3?"hold":"active");
+    }
+}
+
+function update() {
+    let id = document.getElementById("adminTrack").value;
+    let step = document.getElementById("status").value;
+    let location = document.getElementById("location").value;
+
+    let statusText = ["","Shipped","In Transit","On Hold ✈️","Out for Delivery 🚚","Delivered ✅"];
+
+    database[id] = {
+        step: parseInt(step),
+        location: location,
+        status: statusText[step]
+    };
+
+    save();
+    alert("Updated successfully");
+}
+
+</script>
 
 </body>
 </html>
