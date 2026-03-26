@@ -7,31 +7,106 @@
 <style>
 body {
   font-family: Arial;
-  background:#f5f5f5;
-  padding:20px;
+  margin: 0;
+  background: #f4f6f8;
 }
 
-.box {
-  background:#f3e3b0;
-  padding:25px;
-  border-radius:12px;
-  color:#7a5b00;
-  font-size:18px;
+.header {
+  background: #1f3b63;
+  color: white;
+  padding: 15px;
+  font-size: 18px;
+}
+
+.container {
+  padding: 20px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.statusBox {
+  margin-top: 20px;
+  background: #e8dccb;
+  padding: 20px;
+  border-left: 5px solid orange;
+  border-radius: 5px;
+}
+
+.steps {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.step {
+  text-align: center;
+  font-size: 14px;
+}
+
+.circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #ccc;
+  margin: auto;
+  line-height: 30px;
+  color: white;
+}
+
+.active {
+  background: green;
 }
 </style>
 </head>
 
 <body>
 
-<div id="result"></div>
+<div class="header">🌐 Global Express</div>
+
+<div class="container">
+<div class="card">
+
+<h2>Track Package</h2>
+
+<div class="statusBox">
+
+<h3 id="statusText"></h3>
+
+<div class="steps">
+  <div class="step">
+    <div id="ship" class="circle">✓</div>
+    <div>Shipped</div>
+  </div>
+  <div class="step">
+    <div id="transit" class="circle">✓</div>
+    <div>Transit</div>
+  </div>
+  <div class="step">
+    <div id="hold" class="circle">!</div>
+    <div>Hold</div>
+  </div>
+</div>
+
+<p><b>Tracking:</b> <span id="code"></span></p>
+<p><b>Location:</b> <span id="location"></span></p>
+<p><b>Date:</b> <span id="date"></span></p>
+
+</div>
+
+</div>
+</div>
 
 <script>
 
 // DATA
 let data = {
 "GXE777888": {
-location: "Abuja International Airport",
-fee: "100"
+status: "hold",
+location: "Abuja International Airport"
 }
 };
 
@@ -41,16 +116,33 @@ let code = params.get("code");
 if(data[code]) {
 let d = data[code];
 
-document.getElementById("result").innerHTML = `
-<div class="box">
-📦 Package on HOLD at ${d.location}<br><br>
-⚠ Outstanding Fee: $${d.fee}<br><br>
-Please complete payment for release.
-</div>
-`;
+document.getElementById("code").innerText = code;
+document.getElementById("location").innerText = d.location;
+document.getElementById("date").innerText = new Date().toDateString();
+
+if(d.status === "hold") {
+document.getElementById("statusText").innerText = "On Hold";
+
+document.getElementById("ship").classList.add("active");
+document.getElementById("transit").style.background = "#ccc";
+document.getElementById("hold").style.background = "#ccc";
+
+} else if(d.status === "transit") {
+document.getElementById("statusText").innerText = "In Transit";
+
+document.getElementById("ship").classList.add("active");
+document.getElementById("transit").classList.add("active");
 
 } else {
-document.getElementById("result").innerHTML = "Invalid Tracking Number";
+document.getElementById("statusText").innerText = "Delivered";
+
+document.getElementById("ship").classList.add("active");
+document.getElementById("transit").classList.add("active");
+document.getElementById("hold").classList.add("active");
+}
+
+} else {
+document.body.innerHTML = "Invalid Tracking Number";
 }
 
 </script>
